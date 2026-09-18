@@ -8,6 +8,6 @@ class Arm{
     void start();
 
   private:
-    const int servo_pin = 5;
+    const int servo_pin = 7;
     Servo myServo;
 };
