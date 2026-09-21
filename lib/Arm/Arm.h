@@ -1,4 +1,5 @@
 #pragma once
+#include <Arduino.h>
 #include <Servo.h>
 
 class Arm{
@@ -9,5 +10,5 @@ class Arm{
 
   private:
     const int servo_pin = 7;
-    Servo myServo;
+    Servo _myServo;
 };
