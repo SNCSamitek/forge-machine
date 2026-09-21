@@ -13,7 +13,7 @@ private:
   Adafruit_PWMServoDriver driver;
   // pin for both arms
   const int ch1 = 0, ch2 = 3;
-  // link lengths
+  // link lengths (in meters)
   const double ll1 = 0.35, ll2 = 0.35;
   // pulse needed for a certain degree
   const int usmin = 600, usmax = 2400;
