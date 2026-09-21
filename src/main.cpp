@@ -1,7 +1,7 @@
-#include "arm.h"
 #include <Arduino.h>
 #include <Car.h>
 #include <Motor.h>
+#include <Arm.h>
 #include "constants.h"
 
 Motor motors[NUM_OF_MOTORS] = {Motor(5,4), Motor(9,8), 
@@ -27,7 +27,7 @@ void loop() {
   Serial.println("Driving forward...");
 
   arm.setJointAngles(3, 5);
-  
+
   //cars move takes (vx, vy and rotation)
   car.move(200,0,0);
   delay(1000);
