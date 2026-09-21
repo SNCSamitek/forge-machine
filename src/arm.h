@@ -1,13 +1,23 @@
 #pragma once
-#include <Servo.h>
+#include <Adafruit_PWMServoDriver.h>
 
-class Arm{
-  public:
-    Arm();
-    void move(int angle);
-    void start();
+// a two-joint arm
+class Arm {
+public:
+  bool init();
+  int setJointAngles(int, int);
 
-  private:
-    const int servo_pin = 7;
-    Servo myServo;
+private:
+  void writeAngle(int, int);
+
+  Adafruit_PWMServoDriver driver;
+  // pin for both arms
+  const int ch1 = 0, ch2 = 3;
+  // link lengths
+  const double ll1 = 0.35, ll2 = 0.35;
+  // pulse needed for a certain degree
+  const int usmin = 600, usmax = 2400;
+
+  // current arm angles (in degrees)
+  double angle1, angle2; 
 };
