@@ -1,5 +1,5 @@
-#include "car.h"
-#include "motor.h"
+#include "Car.h"
+#include "Motor.h"
 
 Car::Car(Motor* motors, int num_motors) : _motors(motors), _num_motors(num_motors){}
 

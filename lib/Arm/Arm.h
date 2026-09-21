@@ -17,7 +17,7 @@ private:
   const double ll1 = 0.35, ll2 = 0.35;
   // pulse needed for a certain degree
   const int usmin = 600, usmax = 2400;
+
   // current arm angles (in degrees)
-  // current arm angles (in degrees)
-};
+  double angle1, angle2;
 };
