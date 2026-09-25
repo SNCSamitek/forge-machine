@@ -1,4 +1,4 @@
-#include "motor.h"
+#include <Motor.h>
 
 Motor::Motor(int in1Pin, int in2Pin) : _in1Pin(in1Pin), _in2Pin(in2Pin) {}
 
