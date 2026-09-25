@@ -16,11 +16,7 @@ void setup() {
   Serial.println("Startup");
 
   car.init();
-  if(arm.init()) {
-    Serial.println("Initialized arm");
-  } else {
-    Serial.println("Arm failed to initialize");
-  }
+  if(!arm.init()) Serial.println("Car initializaiton has failed");
 }
 
 void loop() {
