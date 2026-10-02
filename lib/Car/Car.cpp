@@ -9,6 +9,7 @@ void Car::init(){
 }
 
 void Car::move(int vx, int vy, int omega){
+
   int speeds[NUM_OF_MOTORS];
 
   speeds[LU] = vx - vy - omega;

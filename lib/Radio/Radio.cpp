@@ -4,9 +4,9 @@
 const int maxValue  = 1792;
 const int minValue  = 172;
 const int zeroValue = 992;
-const float newMax  = 1.0;
-const float newMin  = -1.0;
-const float deadzone = 0.2;
+const int maxOut = 255;
+const int minOut = -255;
+const int deadzone = 8;
 
 Radio::Radio(){}
 
@@ -23,13 +23,13 @@ bool Radio::readControllerData(){
 }
 
 float Radio::normalizeControllerValue(int value){
-    float scale = (newMax - newMin) / (maxValue - minValue);
-    float normalized = (((float) value) - zeroValue) * scale;
+    float scale = (float)(maxOut - minOut) / (maxValue - minValue);
+    int normalized = (((float) value) - zeroValue) * scale;
 
     if (abs(normalized) < deadzone)
         return 0.0;
 
-    return constrain(normalized, newMin, newMax);
+    return constrain(normalized, minOut, maxOut);
 }
 
 bool Radio::update(float* controllerData){
