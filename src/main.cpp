@@ -12,10 +12,13 @@ Motor motors[NUM_OF_MOTORS] = {Motor(5,4), Motor(9,8),
 Car car{motors, NUM_OF_MOTORS};
 Arm arm;
 Radio radio;
-int moves[3] = {0,0,0};
+float controllerData[16];
+
+void printControllerData();
+long unsigned lastPrint = 0;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Startup");
 
   car.init();
@@ -26,14 +29,21 @@ void setup() {
 void loop() {
   //Serial.println("Driving forward...");
 
-  arm.setJointAngles(3, 5);
+  //arm.setJointAngles(3, 5);
 
-  radio.readCommands(moves, 3);
-  Serial.println(moves[VX]);
-  Serial.println(moves[VY]);
-  Serial.println(moves[ROT]);
+  bool success = radio.update(controllerData);
 
-  //cars move takes (vx, vy and rotation)
-  car.move(moves[VX],moves[VY],moves[ROT]);
-  delay(1000);
+  if(success && millis() - lastPrint > 100){
+    lastPrint = millis();
+    printControllerData();
+  }
+
+}
+
+void printControllerData(){
+  for(int i = 0; i < NUMBER_OF_RECEIVER_CHANNELS; i++){
+    Serial.print(controllerData[i]);
+    Serial.print('\t');
+  }
+  Serial.println();
 }
