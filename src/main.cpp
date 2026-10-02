@@ -1,49 +1,47 @@
-#include <Arduino.h>
-#include <Car.h>
-#include <Motor.h>
-#include <Arm.h>
-#include <Radio.h>
-#include <SoftwareSerial.h>
-#include "constants.h"
+  #include <Arduino.h>
+  #include <Car.h>
+  #include <Motor.h>
+  #include <Arm.h>
+  #include <Radio.h>
+  #include "constants.h"
 
-Motor motors[NUM_OF_MOTORS] = {Motor(5,4), Motor(9,8), 
-                              Motor(11,12), Motor(16, 17)};
 
-Car car{motors, NUM_OF_MOTORS};
-Arm arm;
-Radio radio;
-float controllerData[16];
+  Motor motors[NUM_OF_MOTORS] = {Motor(5,4), Motor(9,8), 
+                                Motor(11,12), Motor(16, 17)};
 
-void printControllerData();
-long unsigned lastPrint = 0;
+  Car car{motors, NUM_OF_MOTORS};
+  Arm arm;
+  Radio radio;
+  float controllerData[16];
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Startup");
+  void printControllerData();
+  long unsigned lastPrint = 0;
 
-  car.init();
-  if(!arm.init()) Serial.println("Arm initializaiton has failed");
-  radio.init();
-}
 
-void loop() {
-  //Serial.println("Driving forward...");
+  void setup() {
+    Serial.begin(115200);
+    Serial.println("Startup");
 
-  //arm.setJointAngles(3, 5);
-
-  bool success = radio.update(controllerData);
-
-  if(success && millis() - lastPrint > 100){
-    lastPrint = millis();
-    printControllerData();
+    car.init();
+    if(!arm.init()) Serial.println("Arm initializaiton has failed");
+    radio.init();
   }
 
-}
+  void loop() {
+    bool success = radio.update(controllerData);
+    car.move(controllerData[0], controllerData[1], controllerData[3]);
+    
+    if(success && millis() - lastPrint > 100){
+      lastPrint = millis();
+      printControllerData();
+    }
 
-void printControllerData(){
-  for(int i = 0; i < NUMBER_OF_RECEIVER_CHANNELS; i++){
-    Serial.print(controllerData[i]);
-    Serial.print('\t');
   }
-  Serial.println();
-}
+
+  void printControllerData(){
+    for(int i = 0; i < NUMBER_OF_RECEIVER_CHANNELS; i++){
+      Serial.print(controllerData[i]);
+      Serial.print('\t');
+    }
+    Serial.println();
+  }
