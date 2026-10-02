@@ -1,13 +1,17 @@
 #pragma once
-#include <SBUS.h>
+#include "sbus.h"
 #include "constants.h"
 
 class Radio{
     private:
         static const int FREQUENCY;
-        SBUS _sbus;
+        bfs::SbusRx sbus_rx{&Serial3};
+        bfs::SbusData data;
     public:
         Radio();
         void init();
-        void readCommands(int* moves, int size);
+
+        bool readControllerData();
+        float normalizeControllerValue(int value);
+        bool update(float* controllerData);
 };
