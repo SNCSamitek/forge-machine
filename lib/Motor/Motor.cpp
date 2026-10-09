@@ -13,11 +13,16 @@ void Motor::forward(int speed) {
 }
 
 void Motor::backward(int speed) {
-  analogWrite(_in1Pin, constrain(speed, 0, 255));
-  digitalWrite(_in2Pin, HIGH);
+  digitalWrite(_in1Pin, LOW);
+  analogWrite(_in2Pin, constrain(speed, 0, 255));
 }
 
 void Motor::stop() {
   digitalWrite(_in1Pin, LOW);
   digitalWrite(_in2Pin, LOW);
+}
+
+void Motor::brake(){
+  digitalWrite(_in1Pin, HIGH);
+  digitalWrite(_in2Pin, HIGH);
 }
