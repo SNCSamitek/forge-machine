@@ -12,4 +12,5 @@ class Motor {
     void forward(int speed);
     void backward(int speed);
     void stop();
+    void brake();
 };
