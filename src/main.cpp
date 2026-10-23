@@ -10,7 +10,8 @@
                                 Motor(8,9), Motor(6, 7)};
 
   Car car{motors, NUM_OF_MOTORS};
-  Arm arm;
+  //pins, then length
+  Arm arm(1, 2, BICEP_LENGTH, FOREARM_LENGTH);
   Radio radio;
   float controllerData[16];
 
