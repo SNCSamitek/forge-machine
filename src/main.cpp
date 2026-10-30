@@ -3,15 +3,18 @@
   #include <Motor.h>
   #include <Arm.h>
   #include <Radio.h>
+  #include <ServoJoint.h>
   #include "constants.h"
 
 
   Motor motors[NUM_OF_MOTORS] = {Motor(2,3), Motor(4,5), 
                                 Motor(8,9), Motor(6, 7)};
-
   Car car{motors, NUM_OF_MOTORS};
-  //pins, then length
-  Arm arm(1, 2, BICEP_LENGTH, FOREARM_LENGTH);
+
+  //Please initialize from shoulder downwards
+  ServoJoint servos[NUM_OF_SERVOS] = {ServoJoint(SF3218MG), ServoJoint(SF3218MG)};
+  Arm arm(servos, NUM_OF_SERVOS, BICEP_LENGTH, FOREARM_LENGTH);
+
   Radio radio;
   float controllerData[16];
 
@@ -23,14 +26,16 @@
     Serial.println("Startup");
 
     car.init();
-    //if(!arm.init()) Serial.println("Arm initializaiton has failed");
+    arm.init();
     radio.init();
   }
 
   void loop() {
     bool success = radio.update(controllerData);
     car.move(controllerData[0], controllerData[1], controllerData[3]);
-    
+
+    //so far i ac don't know what channels we'll be using soooo...
+    arm.move({controllerData[2], controllerData[4]});
     printControllerData(success);
 
   }

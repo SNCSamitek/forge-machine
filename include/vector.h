@@ -7,6 +7,6 @@ struct vector{
   
   vector(int a, int b) : x(a), y(b){};
 
-  inline int getHypo(){return sqrt(x*x + y*y);}
-  inline int getAngle(){return atan2(y,x);}
+  inline float getHypo() const {return sqrt(x*x + y*y);}
+  inline float getAngle() const{return atan2(y,x);}
 };

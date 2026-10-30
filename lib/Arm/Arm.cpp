@@ -1,28 +1,43 @@
 #include "Arm.h"
 #include "constants.h"
 #include <Arduino.h>
-#include <Wire.h>
 
-Arm::Arm(int p1, int p2, float bl, float fl) : pins({p1,p2}), forearmLength(fl), bicepLength(bl){}
+Arm::Arm(ServoJoint* servos, int numOfServos, float bl, float fl) : 
+servos(servos), num_servos(numOfServos), angles(new float[numOfServos]),
+bicepLength(bl), forearmLength(fl) {}
 
-bool Arm::init() {}
+void Arm::init() {
+  ServoJoint::initDriver();
 
-void Arm::writeAngle(int channel, int degrees) {
-  
+  for(int i = 0; i < num_servos; i++){
+    servos[i].begin(135.0f);
+    angles[i] = 135.0f;
+  }
 }
 
-bool Arm::setJointAngles(vector target) {
-  if(target.getHypo() > forearmLength + bicepLength ||
-    target.getHypo() < fabs(forearmLength - bicepLength))
-    return false;
+void Arm::writeAngles(){
+  for(int i = 0; i < num_servos; i++)
+    servos[i].update(angles[i]);
+}
 
+bool Arm::move(vector target) {
   //LENGTHS
   float h = (float)target.getHypo();
-  float l = (float)BICEP_LENGTH;
-  float k = (float)FOREARM_LENGTH;
+  float bl = (float)bicepLength;
+  float fl = (float)forearmLength;
 
-  this->shoulderAngle = degrees(target.getAngle() + acos((h*h + l*l - k*k)/(2*l*h)));
-  this->elbowAngle = degrees(acos((h*h - l*l - k*k)/(2*l*k)));
+  if(h > bl + fl || h < fabs(fl - bl) || h < 0.001f){
+    writeAngles();
+    return false;
+  }
 
+  //INVERSE FORMULA FOR 2-DOF
+  float a = constrain((h*h + bl*bl - fl*fl)/(2*bl*h), -1.0f, 1.0f);
+  float b = constrain((h*h - bl*bl - fl*fl)/(2*bl*fl), -1.0f, 1.0f);
+
+  this->angles[shoulderAngle] = degrees(target.getAngle() + acos(a));
+  this->angles[elbowAngle] = degrees(acos(b));
+
+  writeAngles();
   return true;
 }
