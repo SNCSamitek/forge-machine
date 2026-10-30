@@ -1,43 +1,43 @@
 #include "Arm.h"
+#include "constants.h"
 #include <Arduino.h>
-#include <Wire.h>
 
-bool Arm::init() {
-  Wire.setWireTimeout(25000, true);
+Arm::Arm(ServoJoint* servos, int numOfServos, float bl, float fl) : 
+servos(servos), num_servos(numOfServos), angles(new float[numOfServos]),
+bicepLength(bl), forearmLength(fl) {}
 
-  if (!driver.begin()) {
+void Arm::init() {
+  ServoJoint::initDriver();
+
+  for(int i = 0; i < num_servos; i++){
+    servos[i].begin(135.0f);
+    angles[i] = 135.0f;
+  }
+}
+
+void Arm::writeAngles(){
+  for(int i = 0; i < num_servos; i++)
+    servos[i].update(angles[i]);
+}
+
+bool Arm::move(vector target) {
+  //LENGTHS
+  float h = (float)target.getHypo();
+  float bl = (float)bicepLength;
+  float fl = (float)forearmLength;
+
+  if(h > bl + fl || h < fabs(fl - bl) || h < 0.001f){
+    writeAngles();
     return false;
   }
 
-  driver.setPWMFreq(60.f);
+  //INVERSE FORMULA FOR 2-DOF
+  float a = constrain((h*h + bl*bl - fl*fl)/(2*bl*h), -1.0f, 1.0f);
+  float b = constrain((h*h - bl*bl - fl*fl)/(2*bl*fl), -1.0f, 1.0f);
+
+  this->angles[shoulderAngle] = degrees(target.getAngle() + acos(a));
+  this->angles[elbowAngle] = degrees(acos(b));
+
+  writeAngles();
   return true;
-}
-
-void Arm::writeAngle(int channel, int degrees) {
-  int pulseMicros = map(degrees, 0, 180, usmin, usmax);
-  driver.writeMicroseconds(channel, pulseMicros);
-}
-
-int Arm::setJointAngles(int x, int y) {
-  float distanceToTarget = x * x + y * y;
-
-  if ((ll1 + ll2) < distanceToTarget ||
-      abs(ll1 - ll2) > distanceToTarget) {
-    Serial.println("the crane arm cannot get to that target");
-    return 0;
-  }
-
-  double theta2 =
-      acos((x * x + y * y - ll1 * ll1 - ll2 * ll2 / 2 * (ll1 * ll2)));
-  double theta1 =
-      atan2(y, x) - atan2((ll2 * sin(ll2)), (ll1 + (ll2 * cos(ll2))));
-  angle1 = constrain(theta1 * (M_PI / 180), 0, 180);
-  angle2 = constrain(theta2 * (M_PI / 180), 0, 180);
-
-  writeAngle(ch1, angle1);
-  writeAngle(ch2, angle2);
-
-  Serial.println("angle set");
-
-  return 1;
 }
