@@ -1,5 +1,7 @@
 #include "Car.h"
+#include "Arduino.h"
 #include "Motor.h"
+#include "constants.h"
 
 Car::Car(Motor* motors, int num_motors) : _motors(motors), _num_motors(num_motors){}
 
@@ -8,29 +10,29 @@ void Car::init(){
     _motors[i].begin();
 }
 
-void Car::move(int vx, int vy, int omega){
+void Car::move(float vx, float vy, float omega){
 
-  int speeds[NUM_OF_MOTORS];
+  float speeds[NUM_OF_MOTORS];
 
   speeds[LU] = vx - vy - omega;
   speeds[RU] = vx + vy + omega;
   speeds[LD] = vx + vy - omega;
   speeds[RD] = vx - vy + omega;
 
-  normalize(speeds);
+  // this->normalize(speeds, NUM_OF_MOTORS);
 
   for(int i = 0; i < _num_motors; i++)
     setMotor(_motors[i], speeds[i]);
 }
 
-void Car::setMotor(Motor& m, int speed){
+void Car::setMotor(Motor& m, float speed){
   if(speed < 0)
-    m.backward(constrain(-speed,0,255));
+    m.backward(-speed);
   else
-    m.forward(constrain(speed,0,255));
+    m.forward(speed);
 }
 
-void Car::normalize(int* speeds){
+void Car::normalize(float* speeds, int num_speeds){
   int maxSpeed = 0;
 
   //find max
@@ -38,7 +40,7 @@ void Car::normalize(int* speeds){
     int mag = abs(speeds[i]);
     if(mag > maxSpeed) maxSpeed = mag;
   }
-  
+
   //normalize
   if(maxSpeed > 255){
     for(int i = 0; i < NUM_OF_MOTORS; i++){
@@ -47,3 +49,11 @@ void Car::normalize(int* speeds){
   }
 }
 
+void Car::test() {
+    this->move(0, 100, 0);
+    delay(1000);
+    this->move(0, -100, 0);
+    delay(1000);
+    this->move(0, 0, 0);
+    delay(1000);
+}

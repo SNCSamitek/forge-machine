@@ -7,10 +7,13 @@ class Car {
   private:
     Motor* _motors;
     int _num_motors;
-  public: 
+    void normalize(float* speeds, int num_speeds);
+    void normalize(float speed);
+
+  public:
     Car(Motor* motors, int num_motors);
     void init();
-    void move(int vx, int vy, int omega);
-    void setMotor(Motor& m, int speed);
-    void normalize(int* speeds);
+    void move(float vx, float vy, float omega);
+    void setMotor(Motor& m, float speed);
+    void test();
 };
