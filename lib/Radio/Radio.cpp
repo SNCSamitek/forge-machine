@@ -9,7 +9,8 @@ const int maxOut = 255;
 const int minOut = -255;
 const int deadzone = 8;
 
-Radio::Radio(HardwareSerial* serial) : sbus_rx(serial) {}
+Radio::Radio(HardwareSerial* serial, const int8_t rxpin, const int8_t txpin,
+       const bool inv) : sbus_rx(serial, rxpin, txpin, inv) {}
 
 void Radio::init() { sbus_rx.Begin(); }
 

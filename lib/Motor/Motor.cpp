@@ -49,3 +49,13 @@ void Motor::test(int speed) {
     delay(1000);
     this->stop();
 }
+
+void Motor::test(float speed) {
+    this->forward(speed);
+    delay(1000);
+    this->stop();
+    delay(1000);
+    this->backward(speed);
+    delay(1000);
+    this->stop();
+}

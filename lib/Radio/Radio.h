@@ -9,7 +9,8 @@ class Radio {
     bfs::SbusData data;
 
   public:
-    Radio(HardwareSerial* serial);
+    Radio(HardwareSerial* serial, const int8_t rxpin, const int8_t txpin,
+          const bool inv);
     void init();
 
     bool readControllerData();

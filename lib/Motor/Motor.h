@@ -16,4 +16,5 @@ class Motor {
     void stop();
     void brake();
     void test(int speed);
+    void test(float speed);
 };
