@@ -13,7 +13,7 @@ class Arm {
   public:
     Arm(ServoJoint*, int, float, float);
 
-    void init();
+    bool init();
     bool move(vector);
     void writeAngles();
 };

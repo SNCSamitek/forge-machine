@@ -2,6 +2,8 @@
 #include "constants.h"
 #include <Arduino.h>
 #include <Arm.h>
+#include <Claw.h>
+#include <Telescope.h>
 #include <Car.h>
 #include <Motor.h>
 #include <Radio.h>
@@ -18,11 +20,18 @@ Car car{motors, NUM_OF_MOTORS};
 
 constexpr ServoSpec SF3218MG = {500, 2400, 270, 300};
 
-// Please initialize from shoulder downwards
-ServoJoint servos[NUM_OF_SERVOS] = {ServoJoint(SF3218MG), ServoJoint(SF3218MG)};
-Arm arm(servos, NUM_OF_SERVOS, BICEP_LENGTH, FOREARM_LENGTH);
+// Please initialize shoulder first, elbow second
+ServoJoint arm_servos[NUM_OF_SERVOS] = {ServoJoint(SF3218MG), ServoJoint(SF3218MG)};
+Arm arm(arm_servos, NUM_OF_SERVOS, BICEP_LENGTH, FOREARM_LENGTH);
 
-// Radio radio{&Serial, 0, 0, true};
+//Please initialize wrist first, fingers second
+ServoJoint claw_servos[NUM_OF_SERVOS] = {ServoJoint(SF3218MG), ServoJoint(SF3218MG)};
+Claw claw(claw_servos, NUM_OF_SERVOS);
+
+int lengthTelescope = 420; 
+Telescope telescope{ServoJoint(SF3218MG), lengthTelescope};
+
+Radio radio{&Serial3};
 float controllerData[16];
 
 void printControllerData(bool success);
@@ -31,22 +40,23 @@ long unsigned lastPrint = 0;
 void setup() {
     Serial.begin(9600);
     Serial.println("Startup");
+    car.init();
 
-    // car.init();
-    left_up.begin();
-    // arm.init();
-    // radio.init();
+    ServoJoint::initDriver();
+    if(!arm.init())
+        Serial.println("arm failed to initialize");
+    if(!claw.init())
+        Serial.println("claw failed to initialize");
+
+    radio.init();
 }
 
 void loop() {
-    left_up.test(100.0f);
-    // car.test();
 
-    // bool success = radio.update(controllerData);
-    // if (!success) {
-    //     return;
-    // }
-    // car.move(controllerData[0], controllerData[1], controllerData[3]);
+    bool success = radio.update(controllerData);
+    if (!success) 
+         return;
+    car.move(controllerData[0], controllerData[1], controllerData[3]);
 
     // so far i ac don't know what channels we'll be using soooo...
     // arm.move({controllerData[2], controllerData[4]});

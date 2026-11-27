@@ -6,13 +6,15 @@ Arm::Arm(ServoJoint* servos, int numOfServos, float bl, float fl) :
 servos(servos), num_servos(numOfServos), angles(new float[numOfServos]),
 bicepLength(bl), forearmLength(fl) {}
 
-void Arm::init() {
-  ServoJoint::initDriver();
+bool Arm::init() {
+  if(servos == nullptr || num_servos != 2)
+    return false;
 
   for(int i = 0; i < num_servos; i++){
     servos[i].begin(135.0f);
     angles[i] = 135.0f;
   }
+  return true;
 }
 
 void Arm::writeAngles(){
