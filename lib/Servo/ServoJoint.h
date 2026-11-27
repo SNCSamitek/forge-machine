@@ -21,9 +21,9 @@ private:
     void write(float deg);
 
 public:
-    ServoJoint(const ServoSpec& spec);
-
     static void initDriver();
+
+    ServoJoint(const ServoSpec& spec);
     void begin(float startDeg);
     void update(float targetDeg);
 };
