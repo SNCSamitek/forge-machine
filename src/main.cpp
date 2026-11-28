@@ -9,10 +9,10 @@
 #include <Radio.h>
 #include <ServoJoint.h>
 
-Motor left_up = Motor(13, 12);
-Motor right_up = Motor(14, 27);
-Motor left_down = Motor(26, 25);
-Motor right_down = Motor(33, 32);
+Motor left_up = Motor(6, 7);
+Motor right_up = Motor(9, 8);
+Motor left_down = Motor(10, 11);
+Motor right_down = Motor(13, 12);
 
 Motor motors[NUM_OF_MOTORS] = {left_up, right_up, left_down, right_down,};
 
@@ -28,10 +28,14 @@ Arm arm(arm_servos, NUM_OF_SERVOS, BICEP_LENGTH, FOREARM_LENGTH);
 ServoJoint claw_servos[NUM_OF_SERVOS] = {ServoJoint(SF3218MG), ServoJoint(SF3218MG)};
 Claw claw(claw_servos, NUM_OF_SERVOS);
 
-int lengthTelescope = 420; 
+int lengthTelescope = 420;
 Telescope telescope{ServoJoint(SF3218MG), lengthTelescope};
 
-Radio radio{&Serial3};
+#if defined (ESP32)
+Radio radio{&Serial, 0, 0, true};
+#else
+Radio radio(&Serial3);
+#endif
 float controllerData[16];
 
 void printControllerData(bool success);
@@ -49,14 +53,25 @@ void setup() {
         Serial.println("claw failed to initialize");
 
     radio.init();
+    for(size_t i=0;i<16;i++){
+        controllerData[i] = 0;
+    }
 }
 
 void loop() {
+    // right_up.test(100.0f);
+    // left_up.test(100.0f);
+    // right_down.test(100.0f);
+    // left_down.test(100.0f);
+    // car.test();
 
     bool success = radio.update(controllerData);
-    if (!success) 
-         return;
-    car.move(controllerData[0], controllerData[1], controllerData[3]);
+    // printControllerData(success);
+    if (!success) {
+        Serial.println("Couldn't read controller data");
+        return;
+    }
+    car.move(controllerData[1], controllerData[0], controllerData[3]);
 
     // so far i ac don't know what channels we'll be using soooo...
     // arm.move({controllerData[2], controllerData[4]});
@@ -71,5 +86,7 @@ void printControllerData(bool success) {
             Serial.print('\t');
         }
         Serial.println();
+    } else {
+        Serial.println("Couldn't read controller");
     }
 }

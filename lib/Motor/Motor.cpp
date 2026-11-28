@@ -15,7 +15,7 @@ void Motor::forward(int speed) {
 
 void Motor::forward(float speed) {
     constrain(speed, 0.0, 100.0);
-    int mapped = map(speed, 0.0, 100.0, 0, 255);
+    int mapped = (int) map(speed, 0.0, 100.0f, 0.0f, 255.0f);
     this->forward(mapped);
 }
 
@@ -58,4 +58,5 @@ void Motor::test(float speed) {
     this->backward(speed);
     delay(1000);
     this->stop();
+    delay(1000);
 }

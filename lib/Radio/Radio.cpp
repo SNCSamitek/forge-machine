@@ -1,5 +1,6 @@
 #include "Radio.h"
 #include "sbus.h"
+#include "constants.h"
 #include <Arduino.h>
 
 const int maxValue = 1792;
@@ -9,8 +10,12 @@ const int maxOut = 255;
 const int minOut = -255;
 const int deadzone = 8;
 
+#if defined (ESP32)
 Radio::Radio(HardwareSerial* serial, const int8_t rxpin, const int8_t txpin,
        const bool inv) : sbus_rx(serial, rxpin, txpin, inv) {}
+#else
+Radio::Radio(HardwareSerial* serial) : sbus_rx(serial) {}
+#endif
 
 void Radio::init() { sbus_rx.Begin(); }
 

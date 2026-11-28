@@ -1,5 +1,4 @@
 #pragma once
-#include "constants.h"
 #include "sbus.h"
 
 class Radio {
@@ -9,8 +8,12 @@ class Radio {
     bfs::SbusData data;
 
   public:
+    #if defined (ESP32)
     Radio(HardwareSerial* serial, const int8_t rxpin, const int8_t txpin,
           const bool inv);
+    #else
+    Radio(HardwareSerial* serial);
+    #endif
     void init();
 
     bool readControllerData();

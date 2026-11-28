@@ -4,7 +4,7 @@
 2. Open Radio Settings -> Hardware -> Internal RF: Turn it OFF
 3. Create a new model (or reuse one).
 4. Model settings -> Model Setup -> Internal RF (OFF) + External RF (CRSF)
-5. Unplug the RP3 3 times until it double binlks.
+5. Unplug the RP3 3 times until it double blinks.
 6. Radio Settings -> Tools -> ExpressLRS -> Bind
 7. RP3 light should be solid
 
@@ -20,6 +20,15 @@
 1. Make sure your are bound and that the RP3 light is solid.
 2. Make sure that the RP3 antenna is in inverted SBUS.
 3. Read the data using sbus library.
+
+# How to zero out stick drift
+
+1. Turn on the TX16S controller
+2. Press the SYS button
+3. Go to the HARDWARE tab
+4. Press Inputs -> Calibration
+5. Go throught the calibration phase and return to the main screen
+6. Make sure that at rest. The sticks are at 0%. Repeat if needed.
 
 ### Resouces
 
