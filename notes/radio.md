@@ -30,6 +30,15 @@
 5. Go throught the calibration phase and return to the main screen
 6. Make sure that at rest. The sticks are at 0%. Repeat if needed.
 
+# Previously seen issues
+
+### RP3 Antenna goes directly to a solid red light when applied power.
+
+The antenna is probably fried. If you tried to bind the antenna and its still solid light and not binding.
+It may be freid.
+
+Solution: Use a new RP3 antenna. Make sure that you always setup the new antenna with inverted SBUS steps.
+
 ### Resouces
 
 - [RP3 Quick Start](./resources/RP3_Quick_Start_Guide.pdf)
